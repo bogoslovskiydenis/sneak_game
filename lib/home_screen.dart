@@ -26,6 +26,9 @@ class _HomePageState extends State<HomePage> {
   //food position
   int foodPos = 55;
 
+  //currentScore
+  int currentScore = 0;
+
   //snake direction
   var currentDirection = snake_Direction.RIGHT;
 
@@ -37,15 +40,43 @@ class _HomePageState extends State<HomePage> {
         moveSnake();
         //snake is eating food
         eatFood();
+        //check the game is over
+        if (gameOver()) {
+          timer.cancel();
+          //display message
+          showDialog(
+            context: context,
+            builder: ((context) {
+              return AlertDialog(
+                title: Text('Game Over'),
+                content: Text('Your score is:' + currentScore.toString()),
+              );
+            }),
+          );
+        }
       });
     });
   }
 
   void eatFood() {
+    if (sneaPosition.contains(foodPos)) {
+      currentScore++;
+    }
     //makiung sure the food is not whre the snake is
     while (sneaPosition.contains(foodPos)) {
       foodPos = Random().nextInt(totalNumberSqueares);
     }
+  }
+
+  //game over
+  bool gameOver() {
+    //game ia over when snake tun into inself
+    List<int> bodySnake = sneaPosition.sublist(0, sneaPosition.length - 1);
+
+    if (bodySnake.contains(sneaPosition.last)) {
+      return true;
+    }
+    return false;
   }
 
   void moveSnake() {
@@ -107,7 +138,34 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           //scores
-          Expanded(child: Container()),
+          Expanded(
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Current Score',
+                        style: TextStyle(fontSize: 28, color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(currentScore.toString(),
+                          style: TextStyle(fontSize: 40, color: Colors.white)),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 35, left: 5),
+                    child: Text('hightscores....',
+                        style: TextStyle(fontSize: 28, color: Colors.white)),
+                  ),
+                ],
+              ),
+            ),
+          ),
           //game grid
           Expanded(
             flex: 3,
