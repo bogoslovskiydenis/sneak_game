@@ -20,6 +20,8 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberSqueares = 100;
 
+  bool gameHasStarter =false;
+
   //sneak position
   List<int> sneaPosition = [0, 1, 2];
 
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
 
   //startGame
   void startGame() {
+    gameHasStarter = true;
     Timer.periodic(const Duration(milliseconds: 500), (timer) {
       setState(() {
         //snake moving
@@ -49,7 +52,23 @@ class _HomePageState extends State<HomePage> {
             builder: ((context) {
               return AlertDialog(
                 title: Text('Game Over'),
-                content: Text('Your score is:' + currentScore.toString()),
+                content: Column(
+                  children: [
+                    Text('Your score is:' + currentScore.toString()),
+                    TextField(
+                      decoration: InputDecoration(hintText: 'Enter Name'),
+                    ),
+                  ],
+                ),
+                actions: [
+                  Center(
+                    child: MaterialButton(
+                      onPressed: submitScore,
+                      child: Text('Submit'),
+                      color: Colors.blue,
+                    ),
+                  )
+                ],
               );
             }),
           );
@@ -66,6 +85,10 @@ class _HomePageState extends State<HomePage> {
     while (sneaPosition.contains(foodPos)) {
       foodPos = Random().nextInt(totalNumberSqueares);
     }
+  }
+  //submit
+  void submitScore(){
+
   }
 
   //game over
@@ -214,10 +237,8 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Center(
               child: MaterialButton(
-                color: Colors.blue,
-                onPressed: () {
-                  startGame();
-                },
+                color: gameHasStarter ? Colors.grey : Colors.blue,
+                onPressed: gameHasStarter ? () {} :  startGame,
                 child: const Text('PLAY'),
               ),
             ),
