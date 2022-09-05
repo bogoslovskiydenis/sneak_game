@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:sneak_game/widgets/foor_pixel.dart';
@@ -32,9 +33,19 @@ class _HomePageState extends State<HomePage> {
   void startGame() {
     Timer.periodic(const Duration(milliseconds: 500), (timer) {
       setState(() {
+        //snake moving
         moveSnake();
+        //snake is eating food
+        eatFood();
       });
     });
+  }
+
+  void eatFood() {
+    //makiung sure the food is not whre the snake is
+    while (sneaPosition.contains(foodPos)) {
+      foodPos = Random().nextInt(totalNumberSqueares);
+    }
   }
 
   void moveSnake() {
@@ -47,8 +58,6 @@ class _HomePageState extends State<HomePage> {
           } else {
             sneaPosition.add(sneaPosition.last + 1);
           }
-          //remove tail
-          sneaPosition.removeAt(0);
         }
         break;
       case snake_Direction.LEFT:
@@ -59,19 +68,15 @@ class _HomePageState extends State<HomePage> {
           } else {
             sneaPosition.add(sneaPosition.last - 1);
           }
-          //remove tail
-          sneaPosition.removeAt(0);
         }
         break;
       case snake_Direction.UP:
         {
-          if(sneaPosition.last <rowSize){
+          if (sneaPosition.last < rowSize) {
             sneaPosition.add(sneaPosition.last + rowSize + totalNumberSqueares);
           } else {
             sneaPosition.add(sneaPosition.last - rowSize);
           }
-          //remove tail
-          sneaPosition.removeAt(0);
         }
         break;
       case snake_Direction.DOWN:
@@ -82,11 +87,16 @@ class _HomePageState extends State<HomePage> {
           } else {
             sneaPosition.add(sneaPosition.last + rowSize);
           }
-          //remove tail
-          sneaPosition.removeAt(0);
         }
         break;
       default:
+    }
+    //snake is eating food
+    if (sneaPosition.last == foodPos) {
+      eatFood();
+    } else {
+      //remove tail
+      sneaPosition.removeAt(0);
     }
   }
 
