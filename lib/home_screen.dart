@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sneak_game/widgets/foor_pixel.dart';
 import 'package:sneak_game/widgets/pixel_border.dart';
@@ -20,6 +22,18 @@ class _HomePageState extends State<HomePage> {
   //food position
   int foodPos = 55;
 
+  //
+  void startGame(){
+    Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      setState(() {
+        //add head
+        sneaPosition.add(sneaPosition.last +1);
+        //remove tail
+        sneaPosition.removeAt(0);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,17 +47,17 @@ class _HomePageState extends State<HomePage> {
             flex: 3,
             child: GridView.builder(
               itemCount: totalNumberSqueares,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: rowSize),
               itemBuilder: (BuildContext context, int index) {
                 if (sneaPosition.contains(index)) {
-                  return SneakPixel();
+                  return const SneakPixel();
                 } else if (foodPos == index) {
-                  return FoodPosition();
+                  return const FoodPosition();
                 }
                 else {
-                  return PixelBorder();
+                  return const PixelBorder();
                 }
               },
             ),
@@ -51,7 +65,11 @@ class _HomePageState extends State<HomePage> {
 
           //play btn
           Expanded(
-            child: Container(),
+            child: Center(child: MaterialButton(
+              color: Colors.blue, onPressed: () {
+              startGame();
+            },
+              child: const Text('PLAY'),),),
           ),
         ],
       ),
