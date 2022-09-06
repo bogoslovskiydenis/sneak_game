@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   int rowSize = 10;
   int totalNumberSqueares = 100;
 
-  bool gameHasStarter =false;
+  bool gameHasStarter = false;
 
   //sneak position
   List<int> sneaPosition = [0, 1, 2];
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   //snake direction
   var currentDirection = snake_Direction.RIGHT;
 
-  //startGame
+  //region: startGame
   void startGame() {
     gameHasStarter = true;
     Timer.periodic(const Duration(milliseconds: 500), (timer) {
@@ -63,7 +63,11 @@ class _HomePageState extends State<HomePage> {
                 actions: [
                   Center(
                     child: MaterialButton(
-                      onPressed: submitScore,
+                      onPressed: () {
+                        Navigator.pop(context);
+                        submitScore();
+                        newGame();
+                      },
                       child: Text('Submit'),
                       color: Colors.blue,
                     ),
@@ -77,6 +81,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  //endregion
+  void newGame() {
+    setState(() {
+      sneaPosition = [0, 1, 2];
+      foodPos = Random().nextInt(totalNumberSqueares);
+      gameHasStarter = false;
+      currentScore =0;
+    });
+  }
+  //region: startGame
+
+  //endregion:
+
+  //region: eatFood
   void eatFood() {
     if (sneaPosition.contains(foodPos)) {
       currentScore++;
@@ -86,12 +104,13 @@ class _HomePageState extends State<HomePage> {
       foodPos = Random().nextInt(totalNumberSqueares);
     }
   }
+
+  //endregion:
+
   //submit
-  void submitScore(){
+  void submitScore() {}
 
-  }
-
-  //game over
+  //region: game over
   bool gameOver() {
     //game ia over when snake tun into inself
     List<int> bodySnake = sneaPosition.sublist(0, sneaPosition.length - 1);
@@ -102,6 +121,9 @@ class _HomePageState extends State<HomePage> {
     return false;
   }
 
+  //endregion
+
+  //region: moveSnake
   void moveSnake() {
     switch (currentDirection) {
       case snake_Direction.RIGHT:
@@ -153,6 +175,8 @@ class _HomePageState extends State<HomePage> {
       sneaPosition.removeAt(0);
     }
   }
+
+  //endregion
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +262,7 @@ class _HomePageState extends State<HomePage> {
             child: Center(
               child: MaterialButton(
                 color: gameHasStarter ? Colors.grey : Colors.blue,
-                onPressed: gameHasStarter ? () {} :  startGame,
+                onPressed: gameHasStarter ? () {} : startGame,
                 child: const Text('PLAY'),
               ),
             ),
